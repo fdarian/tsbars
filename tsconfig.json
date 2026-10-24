@@ -1,13 +1,11 @@
 {
+  "extends": "@total-typescript/tsconfig/bundler/no-dom/library",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
+    "allowImportingTsExtensions": true,
+    "noErrorTruncation": true,
+    "isolatedDeclarations": true,
     "declaration": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "skipLibCheck": true,
+    "allowJs": false,
     "types": ["bun"]
   },
   "include": ["src"]

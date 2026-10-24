@@ -1,0 +1,7 @@
+packages:
+  - "."
+enableGlobalVirtualStore: true
+packageExtensions:
+  bun-types:
+    dependencies:
+      undici-types: "*"

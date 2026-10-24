@@ -5,25 +5,31 @@
   "type": "module",
   "license": "MIT",
   "author": "Farrel Darian",
+  "packageManager": "pnpm@12.15.0",
   "files": [
     "dist",
+    "wasm",
     "bin",
-    "native"
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     "./compile": {
       "types": "./dist/compile.d.ts",
-      "default": "./dist/compile.js"
+      "import": "./dist/compile.js"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
-      "default": "./dist/vite.js"
+      "import": "./dist/vite.js"
     },
     "./bun": {
       "types": "./dist/bun.d.ts",
-      "default": "./dist/bun.js"
+      "import": "./dist/bun.js"
     },
     "./package.json": "./package.json"
+  },
+  "imports": {
+    "#src/*": "./src/*"
   },
   "typescript": {
     "contentMapper": {
@@ -35,7 +41,10 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsdown",
+    "format": "biome check --write && cargo fmt --all",
+    "check:lint": "biome lint .",
+    "check:type": "tsc --noEmit",
     "build:native": "cargo build --release -p tsbars-mapper",
     "test": "bun test"
   },
@@ -49,9 +58,12 @@
     }
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "handlebars": "^4.7.0",
+    "@biomejs/biome": "2.6.2",
+    "@total-typescript/tsconfig": "1.0.4",
+    "@types/bun": "1.4.4",
+    "handlebars": "4.7.10",
+    "tsdown": "0.23.1",
     "typescript": "7.1.0-beta",
-    "vite": "^8.0.0"
+    "vite": "8.3.5"
   }
 }

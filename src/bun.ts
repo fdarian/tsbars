@@ -1,5 +1,5 @@
 import type { BunPlugin } from "bun";
-import { compile, type CompileOptions } from "./compile.js";
+import { compile, type CompileOptions } from "#src/compile.ts";
 
 export default function tsbars(options?: CompileOptions): BunPlugin {
   return {

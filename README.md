@@ -40,22 +40,22 @@ A [TypeScript content mapper](https://github.com/microsoft/typescript-go/pull/47
 ## Requirements
 
 - TypeScript `7.1.0-beta` (the native compiler), run as `tsc --noEmit --runExternalCode`.
-- Imports must include the `.hbs` extension.
+- Node.js with `node:wasi`. The mapper is a bundled WebAssembly module that `bin/mapper.js` runs under it. CI uses Node 26; older versions are untested.
 - [Handlebars](https://handlebarsjs.com) `^4.7.0` as a peer dependency.
-- A Rust toolchain (rustup picks up the `wasm32-wasip1` target from `rust-toolchain.toml`) to build the mapper, which ships as one portable WebAssembly module.
+- Imports must include the `.hbs` extension.
+
+No Rust toolchain or build step is needed to use tsbars.
 
 ## Install
 
-tsbars is not published to npm yet. From a clone of this repo:
+Once published to npm (it isn't yet):
 
 ```sh
-pnpm install
-pnpm run build   # runtime plugins -> dist/, mapper -> wasm/tsbars-mapper.wasm
+pnpm add -D tsbars typescript@7.1.0-beta
+pnpm add handlebars
 ```
 
-Then make the package resolvable as `tsbars` from your project, for example by symlinking the clone into `node_modules/tsbars` (this is what the e2e tests do).
-
-`bin/mapper.js` runs `wasm/tsbars-mapper.wasm` with `node:wasi`. If the file is missing it tells you to run `pnpm run build:wasm`.
+Vite is an optional peer dependency, only needed for `tsbars/vite`. To try tsbars before the first release, see [Development](#development).
 
 ## Setup
 
@@ -181,7 +181,35 @@ Hello {{user.name}}, you have {{stats.count}} messages.
 - Helpers have no signatures. Their arguments are typed `unknown`, and nothing checks the helper exists.
 - A template that fails to parse is reported as `tsbars1` (for example `broken.hbs(2,1): error tsbars1: Block \`if\` is not closed`). Its default export then accepts `any`, so importers don't produce more errors.
 - Content mappers are a beta TypeScript feature and may change.
-- No prebuilt binaries, no npm release, and editor support is untested.
+- Not published to npm yet, and editor support is untested.
+
+## Development
+
+Prerequisites: [pnpm](https://pnpm.io), [Bun](https://bun.sh) (test runner), and [rustup](https://rustup.rs). rustup installs the toolchain and the `wasm32-wasip1` target from `rust-toolchain.toml` on first use.
+
+```sh
+pnpm install
+pnpm run build    # tsdown -> dist/, then the mapper -> wasm/tsbars-mapper.wasm
+pnpm run check    # tsc, Biome lint, clippy, bun test, cargo test
+pnpm run format   # Biome + cargo fmt
+```
+
+`bin/mapper.js` exits with a hint to run `pnpm run build:wasm` if `wasm/tsbars-mapper.wasm` is missing. To use a clone from another project, symlink it to that project's `node_modules/tsbars` (tsc only resolves content mapper packages from `node_modules`; the e2e tests do the same).
+
+CI auto-commits formatting on pull requests, then runs `pnpm run check`. See [AGENTS.md](AGENTS.md) for the repo layout.
+
+<details>
+<summary>Releasing</summary>
+
+Add a changeset with your change:
+
+```sh
+pnpm exec changeset
+```
+
+Merging it to `main` opens a "Version Packages" PR; merging that PR publishes to npm through GitHub Actions with OIDC trusted publishing. The first publish has to be done manually, then a trusted publisher configured on npmjs.com.
+
+</details>
 
 ## Acknowledgements
 

@@ -42,11 +42,16 @@
 	},
 	"scripts": {
 		"build": "tsdown && pnpm run build:wasm",
-		"format": "biome check --write && cargo fmt --all",
-		"check:lint": "biome lint .",
-		"check:type": "tsc --noEmit",
 		"build:wasm": "cargo build --release --target wasm32-wasip1 -p tsbars-mapper && mkdir -p wasm && cp target/wasm32-wasip1/release/tsbars-mapper.wasm wasm/",
-		"test": "bun test"
+		"format": "biome check --write && cargo fmt --all",
+		"check": "pnpm run check:type && pnpm run check:lint && pnpm run check:rust && pnpm run test",
+		"check:type": "tsc --noEmit",
+		"check:lint": "biome lint .",
+		"check:rust": "cargo clippy --all-targets -- -D warnings && cargo clippy --target wasm32-wasip1 -p tsbars-mapper -- -D warnings",
+		"test": "bun test && pnpm run test:rust",
+		"test:rust": "cargo test",
+		"ci:version": "changeset version",
+		"ci:release": "pnpm run build && changeset publish"
 	},
 	"peerDependencies": {
 		"handlebars": "^4.7.0",
@@ -59,6 +64,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.6.2",
+		"@changesets/cli": "3.0.3",
 		"@total-typescript/tsconfig": "1.0.4",
 		"@types/bun": "1.4.4",
 		"handlebars": "4.7.10",

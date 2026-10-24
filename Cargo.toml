@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/tsbars"]
+members = ["crates/tsbars", "crates/tsbars-mapper"]
 resolver = "3"
 
 [workspace.package]

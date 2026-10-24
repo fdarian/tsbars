@@ -1,5 +1,7 @@
 # tsbars
 
+![tsbars: typed .hbs imports in TypeScript](docs/hero.gif)
+
 Import `.hbs` files from TypeScript and get a call signature inferred from the template.
 
 `prompt.hbs`:

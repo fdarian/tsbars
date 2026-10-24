@@ -1,0 +1,6 @@
+Hello {{user.name}}!
+{{#if user.admin}}You are an admin.{{/if}}
+{{#each items}}
+- {{title}} ({{author.name}}){{#if done}} [done]{{/if}}
+{{/each}}
+{{#each tags}}{{this}} {{/each}}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/known-limitations/lsp-stale-diagnostics-after-hbs-save.md": {
+      "pageVersion": "sha256:5a6a8254739a9a7e2488f2acaee31bfcf8b13872db04aa309401ceb95dd56086",
+      "completedBy": "claude-code",
+      "completedRunId": "47767911-ee89-497c-8891-7c6e599c89ac",
+      "gitHead": "07b62a918eb843765fa32ba8afa4c0d213fc17ff",
+      "sourceFingerprint": "sha256:120772d109b8cae2dbd63a72c1a60abd5dce979915535eacff2846575c488de0"
+    },
+    "/openwiki/quickstart.md": {
+      "pageVersion": "sha256:1e06ac696a0fcce70c06dbf676e13d420f54ed16c93e8f2eca4022c906909344",
+      "completedBy": "claude-code",
+      "completedRunId": "47767911-ee89-497c-8891-7c6e599c89ac",
+      "gitHead": "07b62a918eb843765fa32ba8afa4c0d213fc17ff",
+      "sourceFingerprint": "sha256:120772d109b8cae2dbd63a72c1a60abd5dce979915535eacff2846575c488de0"
+    }
+  }
+}

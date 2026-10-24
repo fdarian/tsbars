@@ -7,8 +7,14 @@ import { fileURLToPath } from "node:url";
 const packageDir = join(dirname(fileURLToPath(import.meta.url)), "..");
 const binaryName = process.platform === "win32" ? "tsbars-mapper.exe" : "tsbars-mapper";
 
+const override = process.env.TSBARS_MAPPER_BIN;
+if (override !== undefined && override !== "" && !existsSync(override)) {
+  process.stderr.write(`tsbars: TSBARS_MAPPER_BIN is set but does not exist: ${override}\n`);
+  process.exit(1);
+}
+
 const candidates = [
-  process.env.TSBARS_MAPPER_BIN,
+  override,
   join(packageDir, "native", binaryName),
   join(packageDir, "target", "release", binaryName),
   join(packageDir, "target", "debug", binaryName),

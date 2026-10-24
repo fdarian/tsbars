@@ -1,3 +1,3 @@
-import greeting from "./greeting.hbs";
+import greeting from './greeting.hbs';
 
-greeting({ name: "Ada" });
+greeting({ name: 'Ada' });

@@ -1,3 +1,3 @@
-import broken from "./broken.hbs";
+import broken from './broken.hbs';
 
-broken({ name: "Ada" });
+broken({ name: 'Ada' });

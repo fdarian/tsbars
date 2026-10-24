@@ -1,3 +1,3 @@
-import profile from "./profile.hbs";
+import profile from './profile.hbs';
 
-profile({ user: { name: "Ada", age: "thirty" } });
+profile({ user: { name: 'Ada', age: 'thirty' } });

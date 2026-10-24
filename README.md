@@ -14,9 +14,9 @@ Hello {{user.name}}!
 `index.ts`:
 
 ```ts
-import prompt from "./prompt.hbs";
+import prompt from './prompt.hbs';
 
-prompt({ user: { admin: true }, items: [{ title: "Write docs" }] });
+prompt({ user: { admin: true }, items: [{ title: 'Write docs' }] });
 ```
 
 ```text
@@ -28,8 +28,8 @@ The import is typed as `(context: Context) => string`, where `Context` is:
 ```ts
 type Printable = string | number | bigint | boolean;
 type Context = {
-  user: { name: Printable; admin?: unknown };
-  items: ReadonlyArray<{ title: Printable }>;
+	user: { name: Printable; admin?: unknown };
+	items: ReadonlyArray<{ title: Printable }>;
 };
 ```
 
@@ -62,19 +62,19 @@ Add a content mapper to your `tsconfig.json`:
 
 ```jsonc
 {
-  "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "noEmit": true
-  },
-  "contentMappers": [
-    {
-      "package": "tsbars",
-      "extensions": [".hbs"],
-      "options": { "helpers": ["now"] }
-    }
-  ]
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"noEmit": true
+	},
+	"contentMappers": [
+		{
+			"package": "tsbars",
+			"extensions": [".hbs"],
+			"options": { "helpers": ["now"] }
+		}
+	]
 }
 ```
 
@@ -92,7 +92,6 @@ tsc --noEmit --runExternalCode
 <summary>Editor support (not tested by us yet)</summary>
 
 Content mappers are external code, so the editor has to opt in. In VS Code this should mean:
-
 - the TypeScript Native Preview extension,
 - a trusted workspace, with the content mapper permission granted,
 - `js/ts.contentMappers.enabled` turned on.
@@ -107,17 +106,17 @@ Both plugins take [Handlebars compile options](https://handlebarsjs.com/api-refe
 
 ```ts
 // vite.config.ts
-import tsbars from "tsbars/vite";
+import tsbars from 'tsbars/vite';
 
 export default {
-  plugins: [tsbars({ noEscape: true })],
+	plugins: [tsbars({ noEscape: true })],
 };
 ```
 
 ```ts
 // preload.ts, referenced from bunfig.toml: preload = ["./preload.ts"]
-import { plugin } from "bun";
-import tsbars from "tsbars/bun";
+import { plugin } from 'bun';
+import tsbars from 'tsbars/bun';
 
 plugin(tsbars({ noEscape: true }));
 ```
@@ -127,34 +126,33 @@ Use `noEscape: true` for LLM prompts. Handlebars HTML-escapes `{{value}}` by def
 Compiled templates use `handlebars/runtime`, so register helpers there:
 
 ```ts
-import Handlebars from "handlebars/runtime";
+import Handlebars from 'handlebars/runtime';
 
-Handlebars.registerHelper("shout", (text: string) => text.toUpperCase());
+Handlebars.registerHelper('shout', (text: string) => text.toUpperCase());
 ```
 
 The helper must be registered before the template runs. tsbars doesn't see it, so list it in `options.helpers` if you call it with no arguments.
 
 ## How types are inferred
 
-| Template | Inferred |
-| --- | --- |
-| `{{a.b}}` | `a: { b: Printable }` |
-| `{{#if a}}`, `{{#unless a}}`, `{{else if a}}` | `a?: unknown`, or `a?: <type from other uses>` |
-| `{{#each xs}}{{title}}{{/each}}` | `xs: ReadonlyArray<{ title: Printable }>` |
-| `{{#each xs}}{{this}}{{/each}}` | `xs: ReadonlyArray<Printable>` |
-| `{{#each xs}}{{@key}} {{this}}{{/each}}` | `xs: Readonly<Record<string, Printable>>` |
-| `{{#each xs as \|x i\|}}{{x.id}}{{/each}}` | `xs: ReadonlyArray<{ id: Printable }>` (first block param names the item) |
-| `{{#with a}}{{b}}{{/with}}` | `a: { b: Printable }`; optional if the block has `{{else}}` |
-| `{{../b}}` inside a block | `b` is looked up in the parent scope, one level per `../` |
-| `{{@root.b}}` | `b` on the root context |
-| `{{shout name}}`, `{{upper (trim raw)}}` | `name: unknown`, `raw: unknown`; the helper itself is not part of `Context` |
-| `{{lookup obj key}}` | `obj: unknown`, `key: Printable` |
-| `{{#fancy z}}{{inner}}{{/fancy}}` (unknown block helper) | `z: unknown`; the body adds nothing |
-| `{{now}}` with `"helpers": ["now"]` | nothing |
-| no variables at all | `context?: Record<string, never>` |
+| Template                                                 | Inferred                                                                    |
+| -------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `{{a.b}}`                                                | `a: { b: Printable }`                                                       |
+| `{{#if a}}`, `{{#unless a}}`, `{{else if a}}`            | `a?: unknown`, or `a?: <type from other uses>`                              |
+| `{{#each xs}}{{title}}{{/each}}`                         | `xs: ReadonlyArray<{ title: Printable }>`                                   |
+| `{{#each xs}}{{this}}{{/each}}`                          | `xs: ReadonlyArray<Printable>`                                              |
+| `{{#each xs}}{{@key}} {{this}}{{/each}}`                 | `xs: Readonly<Record<string, Printable>>`                                   |
+| `{{#each xs as \|x i\|}}{{x.id}}{{/each}}`               | `xs: ReadonlyArray<{ id: Printable }>` (first block param names the item)   |
+| `{{#with a}}{{b}}{{/with}}`                              | `a: { b: Printable }`; optional if the block has `{{else}}`                 |
+| `{{../b}}` inside a block                                | `b` is looked up in the parent scope, one level per `../`                   |
+| `{{@root.b}}`                                            | `b` on the root context                                                     |
+| `{{shout name}}`, `{{upper (trim raw)}}`                 | `name: unknown`, `raw: unknown`; the helper itself is not part of `Context` |
+| `{{lookup obj key}}`                                     | `obj: unknown`, `key: Printable`                                            |
+| `{{#fancy z}}{{inner}}{{/fancy}}` (unknown block helper) | `z: unknown`; the body adds nothing                                         |
+| `{{now}}` with `"helpers": ["now"]`                      | nothing                                                                     |
+| no variables at all                                      | `context?: Record<string, never>`                                           |
 
 Notes:
-
 - `Printable` is `string | number | bigint | boolean`. A path that is both printed and used as an object (`{{a}}` and `{{a.b}}`) becomes the object.
 - Property names that aren't valid identifiers (`{{[odd key]}}`) become quoted keys.
 - Properties are listed in the order the template first mentions them.

@@ -1,12 +1,12 @@
 {
-  "extends": "@total-typescript/tsconfig/bundler/no-dom/library",
-  "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "noErrorTruncation": true,
-    "isolatedDeclarations": true,
-    "declaration": true,
-    "allowJs": false,
-    "types": ["bun"]
-  },
-  "include": ["src"]
+	"extends": "@total-typescript/tsconfig/bundler/no-dom/library",
+	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"noErrorTruncation": true,
+		"isolatedDeclarations": true,
+		"declaration": true,
+		"allowJs": false,
+		"types": ["bun"]
+	},
+	"include": ["src"]
 }

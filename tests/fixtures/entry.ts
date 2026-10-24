@@ -1,2 +1,2 @@
-import greeting from "./greeting.hbs";
+import greeting from './greeting.hbs';
 export default greeting;

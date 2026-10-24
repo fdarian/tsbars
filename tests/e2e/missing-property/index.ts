@@ -1,7 +1,7 @@
-import prompt from "./prompt.hbs";
+import prompt from './prompt.hbs';
 
 prompt({
-  user: { admin: true },
-  items: [],
-  tags: [],
+	user: { admin: true },
+	items: [],
+	tags: [],
 });

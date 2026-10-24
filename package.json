@@ -4,6 +4,10 @@
 	"description": "Typed Handlebars imports via TypeScript content mappers",
 	"type": "module",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fdarian/tsbars.git"
+	},
 	"author": "Farrel Darian",
 	"packageManager": "pnpm@12.15.0",
 	"files": [

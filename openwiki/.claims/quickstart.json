@@ -1,20 +1,20 @@
 {
-  "schemaVersion": 1,
-  "pageVersion": "sha256:1e06ac696a0fcce70c06dbf676e13d420f54ed16c93e8f2eca4022c906909344",
-  "claims": [
-    {
-      "id": "claim_8ed9ea3591ea482e952a9a99ed79bfb0",
-      "statement": "The tsbars content mapper is wired into TypeScript through package.json#typescript.contentMapper, which runs node bin/mapper.js.",
-      "evidence": [
-        {
-          "resource": "repo://package.json#L35-L41",
-          "version": "repo-lines-v1:sha256:14c598fa9dd5d582caf2432b3a34f81a89b2e7aa78459c30ea59c4cbab63df34:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjFhMjk0OTI5MmI5MWVhMWNmNTg0NGVkMGJkNWZlNThiZGFlYjJlY2VjYjU5YWFlZGY0Mzk1NzI5NGIxMmNiYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjRlZmM0OTQxOGQyNmRjZjEyOWIyMmE2YWEyMTEwOGNlZWMzNzY3N2EzMmQwOGU5ZDVmZWUzNWRkYTY2YmI5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVlYTk2NTBlM2E5MDk0NGMwNzA0NDEwMmNjYWE4YzkxY2E1YmUxMTI0ODcwYTIyYTY2NDZiZDQxODkzNjJlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM4MzkzMGVmZmJiNDRlODdiMGI2ZGViN2JkNDQyYzA3OGIxZTI4NWQ5MDE4NDEwMjI4NGMzMjNkNTFiNzAzZSJ9"
-        }
-      ]
-    }
-  ],
-  "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-24T09:10:05.197Z"
-  }
+	"schemaVersion": 1,
+	"pageVersion": "sha256:1e06ac696a0fcce70c06dbf676e13d420f54ed16c93e8f2eca4022c906909344",
+	"claims": [
+		{
+			"id": "claim_8ed9ea3591ea482e952a9a99ed79bfb0",
+			"statement": "The tsbars content mapper is wired into TypeScript through package.json#typescript.contentMapper, which runs node bin/mapper.js.",
+			"evidence": [
+				{
+					"resource": "repo://package.json#L35-L41",
+					"version": "repo-lines-v1:sha256:14c598fa9dd5d582caf2432b3a34f81a89b2e7aa78459c30ea59c4cbab63df34:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjFhMjk0OTI5MmI5MWVhMWNmNTg0NGVkMGJkNWZlNThiZGFlYjJlY2VjYjU5YWFlZGY0Mzk1NzI5NGIxMmNiYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjRlZmM0OTQxOGQyNmRjZjEyOWIyMmE2YWEyMTEwOGNlZWMzNzY3N2EzMmQwOGU5ZDVmZWUzNWRkYTY2YmI5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVlYTk2NTBlM2E5MDk0NGMwNzA0NDEwMmNjYWE4YzkxY2E1YmUxMTI0ODcwYTIyYTY2NDZiZDQxODkzNjJlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM4MzkzMGVmZmJiNDRlODdiMGI2ZGViN2JkNDQyYzA3OGIxZTI4NWQ5MDE4NDEwMjI4NGMzMjNkNTFiNzAzZSJ9"
+				}
+			]
+		}
+	],
+	"verification": {
+		"by": "openwiki/0.7.2",
+		"at": "2026-10-24T09:10:05.197Z"
+	}
 }

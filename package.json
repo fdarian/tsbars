@@ -1,0 +1,56 @@
+{
+  "name": "tsbars",
+  "version": "0.0.0",
+  "description": "Typed Handlebars imports via TypeScript content mappers",
+  "type": "module",
+  "license": "MIT",
+  "author": "Farrel Darian",
+  "files": [
+    "dist",
+    "bin",
+    "native"
+  ],
+  "exports": {
+    "./compile": {
+      "types": "./dist/compile.d.ts",
+      "default": "./dist/compile.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "default": "./dist/vite.js"
+    },
+    "./bun": {
+      "types": "./dist/bun.d.ts",
+      "default": "./dist/bun.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "typescript": {
+    "contentMapper": {
+      "exec": [
+        "node",
+        "bin/mapper.js"
+      ],
+      "compilerOptions": []
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "handlebars": "^4.7.0",
+    "vite": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "handlebars": "^4.7.0",
+    "typescript": "7.1.0-beta",
+    "vite": "^8.0.0"
+  }
+}

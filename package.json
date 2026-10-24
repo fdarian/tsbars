@@ -1,6 +1,6 @@
 {
 	"name": "tsbars",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Typed Handlebars imports via TypeScript content mappers",
 	"type": "module",
 	"license": "MIT",

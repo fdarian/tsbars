@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+      - uses: ./.github/actions/setup
+        with: { cache: true }
+      - run: bun run format
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "style: apply formatting"
+
+  check:
+    needs: format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with: { cache: true }
+      - uses: Swatinem/rust-cache@v2
+      - run: pnpm run check

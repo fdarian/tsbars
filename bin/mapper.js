@@ -1,50 +1,43 @@
 #!/usr/bin/env node
-import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const packageDir = join(dirname(fileURLToPath(import.meta.url)), '..');
-const binaryName =
-	process.platform === 'win32' ? 'tsbars-mapper.exe' : 'tsbars-mapper';
+const wasmPath = join(
+	dirname(fileURLToPath(import.meta.url)),
+	'..',
+	'wasm',
+	'tsbars-mapper.wasm',
+);
 
-const override = process.env.TSBARS_MAPPER_BIN;
-if (override !== undefined && override !== '' && !existsSync(override)) {
+// tsc discards our stderr, but keep it clean for direct runs. Must precede the node:wasi import.
+process.removeAllListeners('warning');
+const { WASI } = await import('node:wasi');
+
+let bytes;
+try {
+	bytes = await readFile(wasmPath);
+} catch (error) {
+	if (error.code !== 'ENOENT') throw error;
 	process.stderr.write(
-		`tsbars: TSBARS_MAPPER_BIN is set but does not exist: ${override}\n`,
+		`tsbars: mapper not found at ${wasmPath}\nRun \`pnpm run build:wasm\` in the tsbars repo.\n`,
 	);
 	process.exit(1);
 }
 
-const candidates = [
-	override,
-	join(packageDir, 'native', binaryName),
-	join(packageDir, 'target', 'release', binaryName),
-	join(packageDir, 'target', 'debug', binaryName),
-].filter(Boolean);
-
-const binary = candidates.find((candidate) => existsSync(candidate));
-
-if (binary === undefined) {
-	process.stderr.write(
-		`tsbars: native mapper binary not found. Looked in:\n${candidates.map((candidate) => `  ${candidate}`).join('\n')}\n` +
-			'Run `cargo build --release -p tsbars-mapper` (or `bun run build:native`) in the tsbars repo, ' +
-			'or set TSBARS_MAPPER_BIN to the binary path.\n',
-	);
-	process.exit(1);
-}
-
-const child = spawn(binary, process.argv.slice(2), { stdio: 'inherit' });
-
-child.on('error', (error) => {
-	process.stderr.write(`tsbars: failed to start ${binary}: ${error.message}\n`);
-	process.exit(1);
+// Fds 0/1/2 are passed straight through; process.stdin is deliberately never touched so
+// the WASI blocking read keeps working on the inherited pipe.
+const wasi = new WASI({
+	version: 'preview1',
+	args: ['tsbars-mapper'],
+	env: {},
+	stdin: 0,
+	stdout: 1,
+	stderr: 2,
+	returnOnExit: true,
 });
-
-child.on('exit', (code, signal) => {
-	if (signal !== null) {
-		process.kill(process.pid, signal);
-		return;
-	}
-	process.exit(code ?? 1);
-});
+const instance = await WebAssembly.instantiate(
+	await WebAssembly.compile(bytes),
+	wasi.getImportObject(),
+);
+process.exit(wasi.start(instance));

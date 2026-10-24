@@ -42,21 +42,20 @@ A [TypeScript content mapper](https://github.com/microsoft/typescript-go/pull/47
 - TypeScript `7.1.0-beta` (the native compiler), run as `tsc --noEmit --runExternalCode`.
 - Imports must include the `.hbs` extension.
 - [Handlebars](https://handlebarsjs.com) `^4.7.0` as a peer dependency.
-- A Rust toolchain. There are no prebuilt binaries yet, so you build the mapper yourself.
+- A Rust toolchain (rustup picks up the `wasm32-wasip1` target from `rust-toolchain.toml`) to build the mapper, which ships as one portable WebAssembly module.
 
 ## Install
 
 tsbars is not published to npm yet. From a clone of this repo:
 
 ```sh
-bun install
-bun run build          # runtime plugins -> dist/
-bun run build:native   # cargo build --release -p tsbars-mapper
+pnpm install
+pnpm run build   # runtime plugins -> dist/, mapper -> wasm/tsbars-mapper.wasm
 ```
 
 Then make the package resolvable as `tsbars` from your project, for example by symlinking the clone into `node_modules/tsbars` (this is what the e2e tests do).
 
-`bin/mapper.js` looks for the mapper binary in `$TSBARS_MAPPER_BIN`, then `native/`, then `target/release/`, then `target/debug/`. If `TSBARS_MAPPER_BIN` is set to a path that doesn't exist, it exits with an error instead of falling back.
+`bin/mapper.js` runs `wasm/tsbars-mapper.wasm` with `node:wasi`. If the file is missing it tells you to run `pnpm run build:wasm`.
 
 ## Setup
 

@@ -41,11 +41,11 @@
 		}
 	},
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsdown && pnpm run build:wasm",
 		"format": "biome check --write && cargo fmt --all",
 		"check:lint": "biome lint .",
 		"check:type": "tsc --noEmit",
-		"build:native": "cargo build --release -p tsbars-mapper",
+		"build:wasm": "cargo build --release --target wasm32-wasip1 -p tsbars-mapper && mkdir -p wasm && cp target/wasm32-wasip1/release/tsbars-mapper.wasm wasm/",
 		"test": "bun test"
 	},
 	"peerDependencies": {

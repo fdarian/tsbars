@@ -35,16 +35,13 @@ function fixture(name: string) {
 }
 
 beforeAll(() => {
-	const build = Bun.spawnSync(
-		['cargo', 'build', '--release', '-p', 'tsbars-mapper'],
-		{
-			cwd: root,
-			stdout: 'inherit',
-			stderr: 'inherit',
-		},
-	);
+	const build = Bun.spawnSync(['pnpm', 'run', 'build:wasm'], {
+		cwd: root,
+		stdout: 'inherit',
+		stderr: 'inherit',
+	});
 	if (build.exitCode !== 0) {
-		throw new Error('cargo build --release -p tsbars-mapper failed');
+		throw new Error('pnpm run build:wasm failed');
 	}
 }, 300_000);
 
@@ -102,4 +99,109 @@ test('type errors inside an @param annotation land in the template', () => {
 	expect(result.exitCode).not.toBe(0);
 	expect(result.output).toContain('param-bad-type/profile.hbs(1,23)');
 	expect(result.output).toContain("Cannot find name 'Missing'");
+});
+
+function frame(message: object) {
+	const body = JSON.stringify(message);
+	return `Content-Length: ${Buffer.byteLength(body)}\r\n\r\n${body}`;
+}
+
+interface Rpc {
+	id: number;
+	result: Record<string, unknown> & { text: string; diagnosticSource: string };
+}
+
+function parseFrames(output: string) {
+	const messages: Rpc[] = [];
+	let rest = Buffer.from(output);
+	while (rest.length > 0) {
+		const headerEnd = rest.indexOf('\r\n\r\n');
+		const header = rest.subarray(0, headerEnd).toString();
+		const length = Number(/Content-Length: (\d+)/.exec(header)?.[1]);
+		const bodyStart = headerEnd + 4;
+		messages.push(
+			JSON.parse(rest.subarray(bodyStart, bodyStart + length).toString()),
+		);
+		rest = rest.subarray(bodyStart + length);
+	}
+	return messages;
+}
+
+test('bin/mapper.js serves framed JSON-RPC over piped stdio', async () => {
+	const child = Bun.spawn(['node', join(root, 'bin', 'mapper.js')], {
+		stdin: 'pipe',
+		stdout: 'pipe',
+		stderr: 'pipe',
+	});
+	const sleep = () => new Promise((resolve) => setTimeout(resolve, 50));
+
+	const initialize = frame({
+		jsonrpc: '2.0',
+		id: 1,
+		method: 'initialize',
+		params: { positionEncodings: ['utf-8'] },
+	});
+	// One message split mid-header, mid-body across separate writes.
+	const cut = initialize.indexOf('Length') + 3;
+	const cutBody = initialize.length - 5;
+	child.stdin.write(initialize.slice(0, cut));
+	child.stdin.flush();
+	await sleep();
+	child.stdin.write(initialize.slice(cut, cutBody));
+	child.stdin.flush();
+	await sleep();
+	child.stdin.write(initialize.slice(cutBody));
+	child.stdin.flush();
+	await sleep();
+
+	// Two messages in a single write.
+	child.stdin.write(
+		frame({
+			jsonrpc: '2.0',
+			id: 2,
+			method: 'openProject',
+			params: {
+				projectHandle: 'h',
+				options: { helpers: ['now'] },
+				compilerOptions: {},
+			},
+		}) +
+			frame({
+				jsonrpc: '2.0',
+				id: 3,
+				method: 'transform',
+				params: {
+					fileName: '/p/a.hbs',
+					content: 'Hi {{name}} {{now}}',
+					projectHandle: 'h',
+				},
+			}),
+	);
+	child.stdin.flush();
+	await sleep();
+	child.stdin.write(
+		frame({
+			jsonrpc: '2.0',
+			id: 4,
+			method: 'closeProject',
+			params: { projectHandle: 'h' },
+		}),
+	);
+	child.stdin.end();
+
+	const [stdout, stderr, exitCode] = await Promise.all([
+		new Response(child.stdout).text(),
+		new Response(child.stderr).text(),
+		child.exited,
+	]);
+	expect(stderr).toBe('');
+	expect(exitCode).toBe(0);
+
+	const responses = parseFrames(stdout);
+	expect(responses.map((response) => response.id)).toEqual([1, 2, 3, 4]);
+	expect(responses[0].result.diagnosticSource).toBe('tsbars');
+	expect(responses[1].result).toEqual({});
+	expect(responses[2].result.text).toContain('name: Printable');
+	expect(responses[2].result.text).not.toContain('now');
+	expect(responses[3].result).toEqual({});
 });

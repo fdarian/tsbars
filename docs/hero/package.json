@@ -1,0 +1,12 @@
+{
+  "name": "tsbars-hero",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "bun render.ts",
+    "keyframes": "bun render.ts --keyframes /tmp/tsbars-hero-frames"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}

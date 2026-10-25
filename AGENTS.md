@@ -36,4 +36,3 @@ Typed Handlebars imports: `import t from './x.hbs'` gets a call signature inferr
 - Content mappers are external code: tsc needs `--runExternalCode`, or nothing runs.
 - `e2e.test.ts` rebuilds the wasm in `beforeAll`; edits to the Rust crates are picked up by `bun test`.
 - Mapper stdout is the protocol channel. `bin/mapper.js` never touches `process.stdin` so fd 0 stays a blocking pipe for WASI; don't log to stdout.
-- The first npm publish must be manual. OIDC trusted publishing (configured on npmjs.com for this repo and `release.yml`) only works for later releases.

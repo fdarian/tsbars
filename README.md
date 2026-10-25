@@ -48,8 +48,6 @@ No Rust toolchain or build step is needed to use tsbars.
 
 ## Install
 
-Once published to npm (it isn't yet):
-
 ```sh
 pnpm add -D tsbars typescript@7.1.0-beta
 pnpm add handlebars
@@ -90,7 +88,7 @@ tsc --noEmit --runExternalCode
 `examples/basic` is a working project.
 
 <details>
-<summary>Editor support (not tested by us yet)</summary>
+<summary>Editor support</summary>
 
 Content mappers are external code, so the editor has to opt in. In VS Code this should mean:
 - the TypeScript Native Preview extension,
@@ -181,7 +179,6 @@ Hello {{user.name}}, you have {{stats.count}} messages.
 - Helpers have no signatures. Their arguments are typed `unknown`, and nothing checks the helper exists.
 - A template that fails to parse is reported as `tsbars1` (for example `broken.hbs(2,1): error tsbars1: Block \`if\` is not closed`). Its default export then accepts `any`, so importers don't produce more errors.
 - Content mappers are a beta TypeScript feature and may change.
-- Not published to npm yet, and editor support is untested.
 
 ## Development
 
@@ -207,7 +204,7 @@ Add a changeset with your change:
 pnpm exec changeset
 ```
 
-Merging it to `main` opens a "Version Packages" PR; merging that PR publishes to npm through GitHub Actions with OIDC trusted publishing. The first publish has to be done manually, then a trusted publisher configured on npmjs.com.
+Merging it to `main` opens a "Version Packages" PR; merging that PR publishes to npm through GitHub Actions with OIDC trusted publishing.
 
 </details>
 
